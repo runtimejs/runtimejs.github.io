@@ -1,0 +1,34 @@
+body {
+    padding-top: 70px;
+}
+
+.footer {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+}
+
+.screenshot-big {
+    text-align: center;
+    margin-top: 50px;
+
+}
+
+.bs-docs-sidebar .nav>li>a {
+    padding: 4px 20px;
+    color: gray;
+}
+
+/* .jumbotron { */
+/*   text-align: center; */
+/*   background-color: transparent; */
+/* } */
+
+.title-color {
+    /* color: #00C2FF !important; */
+}
+
+/* .navbar-default .navbar-nav>li>a { */
+/*     color: #428bca; */
+/* } */

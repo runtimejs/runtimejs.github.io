@@ -1,0 +1,34 @@
+@@include('docs/_docs_top.html')
+
+
+<div class="page-header"><h1>Kernel architecture</h1></div>
+
+<div class="alert alert-info">
+    <strong>Note!</strong> The project and it's documentation are still in development.
+    Some components of the system haven't been fully implemented. Implementation details
+    and APIs can change.
+</div>
+
+<p class="lead">Runtime.JS system architecture layer diagram.</p>
+
+<img src="/img/runtimejs-arch.png" width="740" height="500" />
+
+<h3>Software isolation</h3>
+<p>All kernel components, device drivers and user applications execute in a single
+    address space and unrestricted kernel mode (CPU ring 0). Protection and isolation
+    are provided by software. Kernel uses builtin V8 engine to compile JavaScript into
+    trusted native code. This guarantees only safe JavaScript code is actually executable.</p>
+<p>Every program runs in it's own sandboxed context and uses limited set of resources.</p>
+
+<h3>Multitasking</h3>
+<p>Runtime.JS uses global non-blocking event loop to dispatch tasks for the whole system. Preemption
+    is supported by design (and by V8), but haven't been implemented yet.</p>
+<p>System runs one instance of V8 virtual machine (V8 isolate) per core.</p>
+
+<h3>IPC</h3>
+<p>Kernel implements remote procedure call (RPC) mechanism for inter-process communication.
+    Functions, ArrayBuffers and other objects are supported as RPC arguments.</p>
+<p>ArrayBuffers are transferred by default, and it's impossible to share memory between programs.
+To send a copy of ArrayBuffer you need to clone it explicitly.</p>
+
+@@include('docs/_docs_bottom.html')

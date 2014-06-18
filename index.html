@@ -1,18 +1,105 @@
-<html>
-<head>
-<title>runtime.js</title>
-<style>
-    html * {
-        font-family: 'Open Sans', sans-serif;
-        max-width: 1000px;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="shortcut icon" href="../../assets/ico/favicon.ico"> -->
+
+    <title>Runtime.JS - kernel built on V8 JavaScript engine</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/main.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-51916456-1', 'runtimejs.org');
+        ga('send', 'pageview');
+    </script>
 </head>
-<body>
-    <h1>runtime.js</h1>
-    <p><b>runtime.js</b> is a kernel built on V8 JavaScript engine. It uses event-driven and non-blocking I/O model inspired by Node.js.</p>
-    <p><a href="https://github.com/runtimejs/runtime">Available on GitHub</a></p>
-    <p><img src="img/runtimejs_2.png" width="700" height="410" /></p>
-    <small>2014, Sergii Iefremov (<a href="https://github.com/iefserge">Serge</a>)</small>
-</body>
+
+    <body>
+    <!-- Fixed navbar -->
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="title-color navbar-brand" href="/index.html">Runtime.JS</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav"></ul>
+            <ul class="nav navbar-nav navbar-right">
+                <!-- <li><a href="/features.html">FEATURES</a></li> -->
+                <li><a href="/docs/index.html">DOCS</a></li>
+                <li><a href="https://github.com/runtimejs/runtime/releases">DOWNLOAD</a></li>
+                <li><a href="/contribute.html">CONTRIBUTE</a></li>
+                <li><a href="https://github.com/runtimejs/runtime">GITHUB</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container">
+
+
+<div class="jumbotron">
+    <h1>Runtime.JS</h1>
+    <p>Operating system kernel built on V8 JavaScript engine</p>
+    <p>
+    <a class="btn btn-lg btn-primary" href="https://github.com/runtimejs/runtime" role="button">View on GitHub &raquo;</a>
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <h2>Why kernel?</h2>
+        <p>By providing environment for JavaScript code only, it is possible to rethink kernel design to improve security, reliability and performance of the system.</p>
+        <p><a class="btn btn-primary" href="/docs/arch.html" role="button">Technical details »</a></p>
+    </div>
+    <div class="col-lg-4">
+        <h2>Event loop</h2>
+        <p>Kernel doesn't use regular threads and processes to multitask. Non-blocking event loop for the whole system used instead.</p>
+        <p><a class="btn btn-primary" href="/docs/arch.html" role="button">View details »</a></p>
+    </div>
+    <div class="col-lg-4">
+        <h2>In development</h2>
+        <p class="text-danger">The project is currently in development and does not provide many essential features.</p>
+        <p>If you want to contribute, your help is very welcome.</p>
+        <p><a class="btn btn-primary" href="/contribute.html" role="button">Contribute »</a></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span4 screenshot-big">
+        <img src="http://runtimejs.org/img/runtimejs_2.png" width="720" />
+    </div>
+</div>
+
+    <div class="footer">
+        <p>© runtime.js 2014. Released under Apache License, Version 2.0.</p>
+    </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    </body>
 </html>
+
