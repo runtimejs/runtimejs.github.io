@@ -21,9 +21,10 @@
 <p>Every program runs in it's own sandboxed context and uses limited set of resources.</p>
 
 <h3>Multitasking</h3>
-<p>Runtime.JS uses global non-blocking event loop to dispatch tasks for the whole system. Preemption
-    is supported by design (and by V8), but haven't been implemented yet.</p>
-<p>System runs one instance of V8 virtual machine (V8 isolate) per core.</p>
+<p>Runtime.JS uses global non-blocking event loop to dispatch tasks for the whole system.
+    Each program runs in it's own instance of V8 virtual machine (V8 isolate).
+    Preemption is supported by design (and by V8), but haven't been implemented yet.</p>
+<p></p>
 
 <h3>IPC</h3>
 <p>Kernel implements remote procedure call (RPC) mechanism for inter-process communication.
