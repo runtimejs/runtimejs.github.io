@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Runtime.JS</title>
+
+		<meta name="description" content="runtime.js">
+		<meta name="author" content="Sergii Iefremov">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="css/syntax/default.min.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn2.css">
+		<!-- <link rel="stylesheet" href="https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/mono&#45;blue.css"> -->
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Runtime.JS</h1>
+					<h5>V8 JavaScript kernel</h5>
+          <br>
+          <h3>Sergii Iefremov / <a href="http://twitter.com/iefserge">@iefserge</a></h3>
+					<p>
+          <h3><a href="http://mic.com">mic.com</a></h3>
+            <br><br>
+						<small>2014</small>
+					</p>
+				</section>
+
+				<section>
+					<h3>This talk:</h3>
+					<ul>
+						<li>focused on server JavaScript</li>
+						<li>includes low-level technical details</li>
+						<li>about open-source project</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Runtime.JS is an operating system kernel built on V8 engine
+					</h3>
+				</section>
+
+				<section>
+					<h3>Runtime.JS:</h3>
+					<ul>
+						<li>system optimized to run JavaScript applications</li>
+						<li>can execute JavaScript only</li>
+						<li>non-blocking and asynchronous I/O from the ground up</li>
+						<li>built from scratch</li>
+						<li>only for x86_64</li>
+						<li>inspired by Node.JS</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						What's the problem with existing systems?
+					</h3>
+					<h3 class="fragment">
+						... as a platforms for JavaScript applications
+					</h3>
+				</section>
+
+				<section>
+					<h3>
+						Mainstream operating systems are not the most efficient platforms for JavaScript applications
+					</h3>
+				</section>
+
+				<section>
+					<h3>
+						Problems with mainstream systems as a platforms for JavaScript applications:
+					</h3>
+          <br>
+					<ul>
+						<li>designed to solve different problems</li>
+						<li>too complex, introduce too many architecture layers</li>
+						<li>inefficient API, most system calls block</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Problems with mainstream systems as a platforms for JavaScript applications:
+					</h3>
+          <br>
+					<ul>
+						<li>inefficient event notifications (using polling)</li>
+						<li>"unsafe" C language at a core</li>
+						<li>written mostly by C programmers to run C programs</li>
+					</ul>
+				</section>
+
+          <style>
+            .boxed { border: 3px solid black !important;  padding: 5px !important; margin-bottom:0px !important; width: 400px !important; }
+            .border { border-bottom-style: solid !important; }
+            .boxlabel { border: 3px solid white !important; padding: 5px 20px !important; margin-bottom:0px !important; width: 400px !important; color:red; }
+            .invis { color:white !important; }
+            .halfinvis { color:gray !important; }
+          </style>
+
+				<section>
+					<h3>
+						Software stack (Node + Linux)
+					</h3>
+					<ul>
+            <table>
+              <tr>
+                <td class="boxed">JavaScript Application</td>
+              </tr>
+              <tr>
+                <td class="boxed">Isolate (V8 VM instance)</td>
+                <td class="boxlabel fragment" data-fragment-index="1">&#x2190; isolation</td>
+              </tr>
+              <tr>
+                <td class="boxed">Main thread (event loop)</td>
+              </tr>
+              <tr>
+                <td class="boxed">Thread pool</td>
+                <td class="boxlabel fragment" data-fragment-index="2">&#x2190; async API</td>
+              </tr>
+              <tr>
+                <td class="boxed">libuv</td>
+                <td class="boxlabel fragment" data-fragment-index="2">&#x2190; async API</td>
+              </tr>
+              <tr>
+                <td class="boxed">Process (node)</td>
+                <td class="boxlabel fragment" data-fragment-index="1">&#x2190; isolation</td>
+              </tr>
+              <tr>
+                <td class="boxed">System call API</td>
+                <td class="boxlabel fragment" data-fragment-index="1">&#x2190; isolation</td>
+              </tr>
+              <tr>
+                <td class="boxed">Kernel (Linux)</td>
+              </tr>
+              <tr>
+                <td class="boxed">Hardware</td>
+              </tr>
+              </tr>
+            </table>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Process isolation
+					</h3>
+					<ul>
+						<li>protects kernel from applications</li>
+						<li>protects applications from each other</li>
+						<li>uses an address space for every process</li>
+						<li>introduces context switches (usermode and kernelmode, between processes)</li>
+            <li>introduces kernel System Call interface</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						VM isolation (V8)
+					</h3>
+					<ul>
+						<li>JavaScript is "safe" language</li>
+						<li>V8 compiles JavaScript into trusted native code</li>
+						<li>sandbox, VM controls everything program is allowed to do</li>
+						<li>often called "software isolation"</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Process vs. VM isolation
+					</h3>
+					<ul>
+						<li>paying twice when using both</li>
+						<li>JavaScript VM provides everything process isolation can offer</li>
+						<li>process isolation required only for native untrusted code</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Runtime.JS is a kernel optimized to run JavaScript applications
+					</h3>
+				</section>
+
+				<section>
+					<h3>
+            Optimizations not available for<br>general-purpose kernels
+					</h3>
+					<ul>
+						<li>VM isolation/protection system</li>
+						<li>JS-optimized kernel interface</li>
+						<li>JS objects for applications communication</li>
+						<li>kernel notifications using event loop</li>
+						<li>kernel-side JavaScript</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+            How does JavaScript kernel look like?
+					</h3>
+					<ul>
+						<li>no binaries support</li>
+						<li>no processes</li>
+						<li>no process isolation we no longer need</li>
+						<li>no legacy POSIX interfaces</li>
+						<li>no system calls</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+            How does JavaScript kernel look like?
+					</h3>
+					<ul>
+						<li>software isolated applications (isolates)</li>
+						<li>single address space</li>
+						<li>builtin V8 engine</li>
+						<li>all I/O is non-blocking and asynchronous</li>
+						<li>global event loop for the whole system</li>
+						<li>lightweight threads for preemptive multitasking</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Software stack (Runtime.JS)
+					</h3>
+					<ul>
+            <table>
+              <tr>
+                <td class="boxed">JavaScript Application</td>
+              </tr>
+              <tr>
+                <td class="boxed">Isolate (V8 VM instance)</td>
+              </tr>
+              <tr>
+                <td class="boxed">System event loop</td>
+              </tr>
+              <tr>
+                <td class="boxed">Kernel (Runtime)</td>
+              </tr>
+              <tr>
+                <td class="boxed">Hardware</td>
+              </tr>
+              </tr>
+            </table>
+					</ul>
+				</section>
+
+				<section>
+					<img width="1000" style="border:0px;box-shadow:0 0 0;" src="img/runtimejs-arch.png">
+				</section>
+
+				<section>
+					<h3>
+						Why JavaScript?
+					</h3>
+					<ul>
+						<li>bytecode of the Web</li>
+						<li>well tested, runs on almost every device</li>
+						<li>easy to write asynchronous I/O code</li>
+						<li>powerful enough to write system components</li>
+						<li>safe and secure</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+            Software isolated applications
+					</h3>
+					<ul>
+						<li>no processes, just isolates</li>
+						<li>each program runs in it's own isolate</li>
+						<li>inter-isolate communication (IIC) using RPC</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+            Event loop
+					</h3>
+					<ul>
+						<li>global event loop for the whole system</li>
+						<li>each isolate has it's own execution stack (kinda like threads)</li>
+						<li>event loop controls and switches between stacks</li>
+						<li>possible to interrupt JavaScript execution (v8 RequestInterrupt)</li>
+            <pre style="border:0px;box-shadow:0 0 0;">function foo() { for (;;); }</pre>
+					</ul>
+				</section>
+
+				<section>
+					<img width="1000" style="border:0px;box-shadow:0 0 0;" src="img/runtimejs-ev.png">
+				</section>
+
+				<section>
+					<h3>
+            Inter-isolate communication (IIC)
+					</h3>
+					<ul>
+						<li>implemented as RPC (Remote Procedure Calls)</li>
+						<li>cross-isolate function calls</li>
+						<li>built on JavaScript promises</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+            Inter-isolate communication (IIC)
+					</h3>
+          <h4>Synchronous function call example:</h4>
+
+          <p style="text-align:left;">Isolate 1:</p>
+            <pre style="border:0px;box-shadow:0 0 0;"><code class="js">
+function add(a, b) {
+  return a + b;
+}
+
+
+</code>
+</pre>
+          <p style="text-align:left;">Isolate 2:</p>
+            <pre style="border:0px;box-shadow:0 0 0;"><code class="js">
+var promise = add(1, 2);
+
+promise.then(function(sum) {
+
+  // outputs "3"
+  console.log(sum);
+})
+</code>
+            </pre>
+				</section>
+
+				<section>
+					<h3>
+            Inter-isolate communication (IIC)
+					</h3>
+          <h4>Asynchronous function call example:</h4>
+
+          <p style="text-align:left;">Isolate 1:</p>
+          <pre style="border:0px;box-shadow:0 0 0;"><code class="js">
+function foo() {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, 2000);
+  });
+}
+
+</code>
+</pre>
+          <p style="text-align:left;">Isolate 2:</p>
+            <pre style="border:0px;box-shadow:0 0 0;"><code class="js">
+var promise = foo();
+
+promise.then(function() {
+
+  // outputs "Hello World!" after 2 seconds
+  console.log('Hello World!');
+})
+</code>
+            </pre>
+				</section>
+
+				<section>
+					<h3>
+            Inter-isolate communication (IIC)
+					</h3>
+          <h4>Zero-copy ArrayBuffer transfer example:</h4>
+
+          <p style="text-align:left;">Isolate 1:</p>
+          <pre style="border:0px;box-shadow:0 0 0;"><code class="js">var buffer = new ArrayBuffer(128);
+
+function getData() {
+  return buffer;
+}
+
+// "buffer.byteLength == 0" after getData() call
+
+</code>
+</pre>
+          <p style="text-align:left;">Isolate 2:</p>
+            <pre style="border:0px;box-shadow:0 0 0;"><code class="js">
+getData().then(function(buffer) {
+
+  // outputs "128"
+  console.log(buffer.byteLength);
+})
+</code>
+            </pre>
+				</section>
+
+
+				<section>
+					<h3>
+            Inter-isolate communication (IIC)
+					</h3>
+          <h4>Can also pass functions:</h4>
+
+          <p style="text-align:left;">Isolate 1:</p>
+          <pre style="border:0px;box-shadow:0 0 0;"><code class="js">function foo(name) {
+  return "Hello " + name + "!";
+}
+
+function getFoo() {
+  return foo;
+}
+</code>
+</pre>
+          <p style="text-align:left;">Isolate 2:</p>
+            <pre style="border:0px;box-shadow:0 0 0;"><code class="js">getFoo().then(function(foo) {
+
+  foo('World').then(function(str) {
+    // outputs "Hello World!"
+    console.log(str);
+  });
+
+})
+</code>
+            </pre>
+				</section>
+
+				<section>
+					<h3>
+            Isolate API
+					</h3>
+          <h4>Functions available to each isolate</h4>
+<pre style="border:0px;box-shadow:0 0 0;"><code class="js">// Global isolate object
+
+// Isolate data
+isolate.data
+
+// Environment data
+isolate.env
+
+// Data provided by kernel
+isolate.system
+
+// Exit isolate
+isolate.exit()
+
+// Write isolate log
+isolate.log()
+</code></pre>
+				</section>
+
+				<section>
+					<h3>
+						DEMO
+					</h3>
+				</section>
+
+				<section>
+					<h3>
+						DEMO
+					</h3>
+          <p>
+            <p>Runtime.JS hosted and should respond to UDP packets</p>
+					<ul>
+						<li>QEMU/KVM</li>
+						<li>Virtio NIC driver</li>
+					</ul>
+            <br>
+            <pre><code># command line
+
+nc -u runtimetest.org 9000
+
+          </pre></code>
+          </p>
+				</section>
+
+				<section>
+					<h3>
+						Project status
+					</h3>
+					<ul>
+						<li>experimental project, in development</li>
+						<li>not ready to use (not yet), lacks many important features</li>
+						<li>most APIs will probably change</li>
+						<li>targets mainly KVM</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Runtime.JS benefits
+					</h3>
+					<ul>
+						<li>network-first server system</li>
+						<li>safe environment, sandboxed applications</li>
+						<li>asynchronous I/O everywhere</li>
+						<li>hackable JavaScript, full control over everything</li>
+            <li>pretty small (less than 10 MiB)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Future work
+					</h3>
+					<ul>
+						<li>TCP/HTTP protocols</li>
+						<li>Filesystems support</li>
+						<li>Optimize everything</li>
+						<li>Lock APIs</li>
+						<li>Xen support</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						About Node
+					</h3>
+					<ul>
+						<li>not compatible with Node</li>
+						<li>provides lower API layer than Node</li>
+						<li>might be possible to port Node?</li>
+						<li>maybe NPM as system package manager?</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Links
+					</h3>
+					<ul>
+            <p>Web</p>
+						<li>http://runtimejs.org/</li>
+            <br>
+            <p>GitHub</p>
+						<li>https://github.com/runtimejs/runtime</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Mic
+					</h3>
+					<ul>
+						<li>http://mic.com</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>
+						Thank you!
+					</h3>
+				</section>
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: false,
+				history: true,
+				center: true,
+
+				theme: 'simple', //Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: 'fade',// Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+        transitionSpeed: 'fast',
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.min.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
