@@ -1,0 +1,18 @@
+# Site settings
+title: runtime.js
+email: iefserge@runtimejs.org
+description: > # this means to ignore newlines until "baseurl:"
+  JavaScript library operating system for the cloud
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://runtimejs.org" # the base hostname & protocol for your site
+twitter_username: runtimejs
+github_username:  runtimejs
+footer_text: © 2014-2015 runtime.js open source project
+permalink: pretty
+
+# Build settings
+highlighter: pygments
+markdown: redcarpet
+
+gems:
+  - jemoji

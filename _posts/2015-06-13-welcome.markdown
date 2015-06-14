@@ -1,0 +1,7 @@
+---
+layout: post
+title:  "Welcome to runtime.js blog!"
+date:   2015-06-13 23:22:26
+categories: runtimejs blog
+---
+Welcome!
