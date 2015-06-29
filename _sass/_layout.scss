@@ -25,7 +25,8 @@ $BigTitleColor: #8EB290;
     text-decoration: none;
 
     &,
-    &:visited {
+    &:visited,
+    &:hover {
         color: #ddd;
     }
 }
