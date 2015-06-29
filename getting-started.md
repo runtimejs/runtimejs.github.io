@@ -4,7 +4,7 @@ title: Getting Started
 permalink: /getting-started/
 ---
 
-## <a name="getting-started"></a>Getting Started
+## <a name="quick-start"></a>Quick Start
 
 The easiest way to start playing with runtime.js is to clone [Hello World](https://github.com/runtimejs/helloworld) repository and run it in QEMU.
 First, make sure you have [Node.js](https://nodejs.org/download/) and [QEMU](http://wiki.qemu.org/Main_Page) installed.
@@ -40,7 +40,7 @@ set PATH=%PATH%;C:\Program Files\qemu
 See also:
 
 [http://wiki.qemu.org/Download](http://wiki.qemu.org/Download)<br>
-[http://en.wikibooks.org/wiki/QEMU/Installing_QEMU](http://en.wikibooks.org/wiki/QEMU/Installing_QEMU)
+<span style="word-wrap:break-word;">[http://en.wikibooks.org/wiki/QEMU/Installing_QEMU](http://en.wikibooks.org/wiki/QEMU/Installing_QEMU)</span>
 
 #### Hello World repository
 

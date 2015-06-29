@@ -214,6 +214,6 @@ pre {
   box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
 }
 
-.button:visited {
+.button:visited, .button:hover, .button:focus {
   color: #fafafa;
 }
