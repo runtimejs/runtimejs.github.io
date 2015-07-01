@@ -80,7 +80,7 @@ npm install runtime-tools -g
 
 ## <a name="creating-an-application"></a>Creating an application
 
-The process is very similar to any other Node.js application managed by npm.
+It's easy to create a new project and manage dependencies using npm package manager:
 
 ```bash
 npm init
