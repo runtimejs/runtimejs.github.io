@@ -271,9 +271,12 @@ $BigTitleColor: #8EB290;
     }
 }
 
+.post-sidebar {
+    margin-left: 200px;
+}
+
 .post-content {
     margin-bottom: $spacing-unit;
-    margin-left: 200px;
 
     @include media-query($on-palm) {
         margin-left: 0px;

@@ -13,7 +13,7 @@ First, make sure you have [Node.js](https://nodejs.org/download/) and [QEMU](htt
 
 Install Node.js if you don't have it already installed.
 [https://nodejs.org/download/](https://nodejs.org/download/).
-[npm](https://www.npmjs.com/) package manager will be also installed.
+[npm](https://www.npmjs.com/) package manager will also be installed.
 
 #### Install QEMU
 
@@ -42,6 +42,14 @@ See also:
 [http://wiki.qemu.org/Download](http://wiki.qemu.org/Download)<br>
 <span style="word-wrap:break-word;">[http://en.wikibooks.org/wiki/QEMU/Installing_QEMU](http://en.wikibooks.org/wiki/QEMU/Installing_QEMU)</span>
 
+#### Install runtime.js command line tools
+
+```
+npm install runtime-cli -g
+```
+
+This adds global `runtime` command for easy access.
+
 #### Hello World repository
 
 Clone and install dependencies:
@@ -58,54 +66,27 @@ Run:
 npm start
 ```
 
-## <a name="developer-tools"></a>Developer tools
+Done, project should load and print "Hello World!".
 
-Tools could be included into application as dev-dependencies (as in Hello World example) or installed globally.
-
-#### runtimeify
-
-[runtimeify](https://www.npmjs.com/package/runtimeify) creates code bundles and packages them into initrd (initial ramdisk) images. It's a wrapper around [Browserify](http://browserify.org/).
-
-```bash
-npm install runtimeify -g
-```
-
-#### runtime-tools
-
-Adds `runtime-qemu` command to be able to easily run bundled up image in QEMU.
-
-```bash
-npm install runtime-tools -g
-```
-
-## <a name="creating-an-application"></a>Creating an application
+## <a name="new-application"></a>New application
 
 It's easy to create a new project and manage dependencies using npm package manager:
 
 ```bash
 npm init
 npm install runtimejs --save
-npm install runtimeify --save-dev
-npm install runtime-tools --save-dev
 ```
 
 index.js
 
 ```js
-var runtime = require('runtimejs');
 console.log('It works!');
 ```
 
-Create bundle:
+Run in QEMU:
 
 ```bash
-runtimeify index.js -o initrd
-```
-
-Run in QEMU locally:
-
-```bash
-runtime-qemu ./initrd
+runtime start
 ```
 
 #### Next Steps

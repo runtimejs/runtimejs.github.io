@@ -4,46 +4,51 @@ layout: index
 
 ## Overview
 
-**runtime.js** is an open-source library operating system for the cloud that runs JavaScript, could be bundled up with an application and deployed as a lightweight and immutable VM image.
+**runtime.js** is an open-source library operating system (unikernel) for the cloud that runs JavaScript, can be bundled up with an application and deployed as a lightweight and immutable VM image.
 
 It's built on [V8 JavaScript engine](https://code.google.com/p/v8/) and uses event-driven and non-blocking I/O model inspired by Node.js. At the moment [KVM](http://www.linux-kvm.org/page/Main_Page) is the only supported hypervisor.
 
-Example **index.js**:
+It tries to be compatible with npm module ecosystem and supports some of the Node.js API.
 
-```js
-var runtime = require('runtimejs')
-console.log('Hello world!')
+_WARNING: project is in development and not ready for production use._
+
+## Usage
+
+Install command line tool `runtime-cli`, it will add `runtime` command to the shell:
+
+```
+npm install runtime-cli -g
 ```
 
-Let's bundle up and run it!
+Make sure QEMU is installed, it enables running applications locally:
 
-```bash
-# install dependencies
-npm install runtimejs
-npm install runtimeify -g
-npm install runtime-tools -g
-
-# bundle up ramdisk image
-runtimeify index.js -o initrd
-
-# make sure you have QEMU installed
+```
 brew install qemu           # OSX
 sudo apt-get install qemu   # Ubuntu
-
-# run it in QEMU
-runtime-qemu ./initrd
 ```
 
-WARNING: project is in development and not ready for production use.
+Setup simple project using npm:
+
+```
+mkdir project
+cd project
+npm init
+npm install runtimejs --save
+echo "console.log('ok')" > index.js
+```
+
+Run project locally in QEMU:
+
+```
+runtime start
+```
+
+That's it, QEMU should load and print `ok` to console.
 
 ## How does it work?
 
-There are two main components: operating system (OS) kernel and a <a href="https://www.npmjs.com/package/runtimejs"><nobr>core JavaScript library</nobr></a>.
+There are two main components: operating system kernel and a <a href="https://www.npmjs.com/package/runtimejs"><nobr>JavaScript library</nobr></a>.
 
-The kernel is the C++ program that manages low-level resources like CPU and memory, runs applications using embedded <a href="https://code.google.com/p/v8/"><nobr>V8 JavaScript engine</nobr></a>, and exposes raw hardware to JavaScript.
-
-Application, its dependencies and the core library are bundled up using <a href="http://browserify.org/">Browserify</a>, then packed into ramdisk image for kernel to use.
-
-runtime.js is a library operating system, because application uses it as its own dependency (library). Internal architecture is similar to [exokernels](https://en.wikipedia.org/wiki/Exokernel), where system exposes the hardware to application code and forces as few abstractions as possible.
+The kernel is written in C++ and manages low-level resources like CPU and memory, runs JavaScript using embedded V8 engine. Library drives the entire system and manages hardware devices (usually virtualized by hypervisor).
 
 <a href="{{ '/getting-started/' | prepend: site.baseurl }}">Get Started &#8811;</a>

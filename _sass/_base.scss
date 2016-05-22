@@ -163,6 +163,11 @@ pre {
     padding-left: $spacing-unit;
     @extend %clearfix;
 
+    .homepage & {
+      max-width: -webkit-calc(#{$home-content-width} - (#{$spacing-unit} * 2));
+      max-width:         calc(#{$home-content-width} - (#{$spacing-unit} * 2));
+    }
+
     @include media-query($on-laptop) {
         max-width: -webkit-calc(#{$content-width} - (#{$spacing-unit}));
         max-width:         calc(#{$content-width} - (#{$spacing-unit}));
@@ -216,4 +221,10 @@ pre {
 
 .button:visited, .button:hover, .button:focus {
   color: #fafafa;
+}
+
+table, table th, table td {
+  border: 1px solid #e8e8e8;
+  border-collapse: collapse;
+  padding: 10px;
 }
